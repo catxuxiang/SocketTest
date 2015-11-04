@@ -45,7 +45,7 @@ class EchoServer
         << (conn->connected() ? "UP" : "DOWN");
     LOG_INFO << conn->getTcpInfoString();
 
-    conn->send("hello\n");
+    conn->send(string("hello\n"));
   }
 
   void onMessage(const TcpConnectionPtr& conn, Buffer* buf, Timestamp time)
@@ -54,7 +54,7 @@ class EchoServer
     LOG_TRACE << conn->name() << " recv " << msg.size() << " bytes at " << time.toString();
     if (msg == "exit\n")
     {
-      conn->send("bye\n");
+      conn->send(string("bye\n"));
       conn->shutdown();
     }
     if (msg == "quit\n")
