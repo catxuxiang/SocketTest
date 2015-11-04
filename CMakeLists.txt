@@ -145,6 +145,7 @@ endif( WIN32 )
 set(GAME_SRC
   Classes/AppDelegate.cpp
   Classes/HelloWorldScene.cpp
+  Classes/mytcpclient.cpp
   Classes/others/muduo/base/AsyncLogging.cc
   Classes/others/muduo/base/Condition.cc
   Classes/others/muduo/base/CountDownLatch.cc
@@ -233,6 +234,7 @@ set(GAME_SRC
 set(GAME_HEADERS
   Classes/AppDelegate.h
   Classes/HelloWorldScene.h
+  Classes/mytcpclient.h
   Classes/others/muduo/base/AsyncLogging.h
   Classes/others/muduo/base/Atomic.h
   Classes/others/muduo/base/BlockingQueue.h
