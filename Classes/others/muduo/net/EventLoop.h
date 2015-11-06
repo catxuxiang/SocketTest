@@ -161,7 +161,7 @@ class EventLoop : noncopyable
   ChannelList activeChannels_;
   Channel* currentActiveChannel_;
 
-  MutexLock mutex_;
+  mutable MutexLock mutex_;
   std::vector<Functor> pendingFunctors_; // @GuardedBy mutex_
 };
 

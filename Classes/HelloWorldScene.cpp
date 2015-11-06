@@ -2,6 +2,17 @@
 
 USING_NS_CC;
 
+HelloWorld::HelloWorld()
+{
+    _pClient = MyTcpClient::getInstance();
+    CC_SAFE_RETAIN(_pClient);
+}
+HelloWorld::~HelloWorld()
+{
+    //_pClient->disconnect();
+    CC_SAFE_RELEASE_NULL(_pClient);
+}
+
 Scene* HelloWorld::createScene()
 {
     // 'scene' is an autorelease object
@@ -71,6 +82,8 @@ bool HelloWorld::init()
 
     // add the sprite as a child to this layer
     this->addChild(sprite, 0);
+
+    _pClient->connect();
     
     return true;
 }

@@ -146,6 +146,7 @@ set(GAME_SRC
   Classes/AppDelegate.cpp
   Classes/HelloWorldScene.cpp
   Classes/mytcpclient.cpp
+  Classes/constants.cpp
   Classes/others/muduo/base/AsyncLogging.cc
   Classes/others/muduo/base/Condition.cc
   Classes/others/muduo/base/CountDownLatch.cc
@@ -235,6 +236,7 @@ set(GAME_HEADERS
   Classes/AppDelegate.h
   Classes/HelloWorldScene.h
   Classes/mytcpclient.h
+  Classes/constants.h
   Classes/others/muduo/base/AsyncLogging.h
   Classes/others/muduo/base/Atomic.h
   Classes/others/muduo/base/BlockingQueue.h
