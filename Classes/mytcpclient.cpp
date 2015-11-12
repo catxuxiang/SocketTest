@@ -21,11 +21,11 @@ MyTcpClient::~MyTcpClient()
 
 MyTcpClient * MyTcpClient::create()
 {
-    EventLoop loop;
+    EventLoopThread loopThread;
     uint16_t port = Constants::ServerPort;
     InetAddress serverAddr(Constants::ServerIp, port);
 
-    MyTcpClient * layer = new (std::nothrow) MyTcpClient(&loop, serverAddr);
+    MyTcpClient * layer = new (std::nothrow) MyTcpClient(loopThread.startLoop(), serverAddr);
     if( layer && layer->init())
     {
         layer->autorelease();
@@ -60,7 +60,7 @@ void MyTcpClient::disconnect()
 
 void MyTcpClient::write(const char* pMsg)
 {
-    MutexLockGuard lock(mutex_);
+    //MutexLockGuard lock(mutex_);
     if (connection_)
     {
         connection_->send(std::string(pMsg));
@@ -73,7 +73,7 @@ void MyTcpClient::onConnection(const TcpConnectionPtr& conn)
              << conn->peerAddress().toIpPort() << " is "
              << (conn->connected() ? "UP" : "DOWN");
 
-    MutexLockGuard lock(mutex_);
+    //MutexLockGuard lock(mutex_);
     if (conn->connected())
     {
         connection_ = conn;

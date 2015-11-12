@@ -147,6 +147,7 @@ set(GAME_SRC
   Classes/HelloWorldScene.cpp
   Classes/mytcpclient.cpp
   Classes/constants.cpp
+  Classes/client.cc
   Classes/others/muduo/base/AsyncLogging.cc
   Classes/others/muduo/base/Condition.cc
   Classes/others/muduo/base/CountDownLatch.cc
