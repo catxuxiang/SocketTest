@@ -1,31 +1,46 @@
 #include "HelloWorldScene.h"
 
 USING_NS_CC;
+using namespace muduo;
+using namespace muduo::net;
 
-HelloWorld::HelloWorld()
+HelloWorld::HelloWorld(EventLoop* loop, const InetAddress& serverAddr) : _client(loop, serverAddr)
 {
-    _pClient = MyTcpClient::getInstance();
-    CC_SAFE_RETAIN(_pClient);
 }
 HelloWorld::~HelloWorld()
 {
-    //_pClient->disconnect();
-    CC_SAFE_RELEASE_NULL(_pClient);
+
 }
 
 Scene* HelloWorld::createScene()
 {
     // 'scene' is an autorelease object
     auto scene = Scene::create();
-    
+
+    EventLoopThread loopThread;
+    uint16_t port = static_cast<uint16_t>(40000);
+    InetAddress serverAddr("127.0.0.1", port);
+
     // 'layer' is an autorelease object
-    auto layer = HelloWorld::create();
+    auto layer = HelloWorld::create(loopThread.startLoop(), serverAddr);
 
     // add layer as a child to scene
     scene->addChild(layer);
 
     // return the scene
     return scene;
+}
+
+HelloWorld* HelloWorld::create(EventLoop* loop, const InetAddress& serverAddr)
+{
+    HelloWorld* pInstance = new (std::nothrow) HelloWorld(loop, serverAddr);
+    if (pInstance && pInstance->init())
+    {
+        pInstance->autorelease();
+        return pInstance;
+    }
+    CC_SAFE_DELETE(pInstance);
+    return nullptr;
 }
 
 // on "init" you need to initialize your instance
@@ -42,6 +57,27 @@ bool HelloWorld::init()
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
     /////////////////////////////
+    // 3. add your codes below...
+
+    // add a label shows "Hello World"
+    // create and initialize a label
+
+    auto label = Label::createWithTTF("Hello World", "fonts/Marker Felt.ttf", 24);
+
+    // position the label on the center of the screen
+    label->setPosition(Vec2(origin.x + visibleSize.width/2,
+                            origin.y + visibleSize.height - label->getContentSize().height));
+
+    // add the label as a child to this layer
+    this->addChild(label, 1);
+
+    MenuItemLabel* pConnect = MenuItemLabel::create(Label::createWithTTF("Connect", "fonts/Marker Felt.ttf", 24), [=](Ref* pSender) {
+        _client.write("111");
+        label->setString("111");
+    });
+    pConnect->setPosition(Vec2(origin.x + visibleSize.width / 4.0f, origin.y + visibleSize.height/2));
+
+    /////////////////////////////
     // 2. add a menu item with "X" image, which is clicked to quit the program
     //    you may modify it.
 
@@ -55,24 +91,9 @@ bool HelloWorld::init()
                                 origin.y + closeItem->getContentSize().height/2));
 
     // create menu, it's an autorelease object
-    auto menu = Menu::create(closeItem, NULL);
+    auto menu = Menu::create(closeItem, pConnect, NULL);
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu, 1);
-
-    /////////////////////////////
-    // 3. add your codes below...
-
-    // add a label shows "Hello World"
-    // create and initialize a label
-    
-    auto label = Label::createWithTTF("Hello World", "fonts/Marker Felt.ttf", 24);
-    
-    // position the label on the center of the screen
-    label->setPosition(Vec2(origin.x + visibleSize.width/2,
-                            origin.y + visibleSize.height - label->getContentSize().height));
-
-    // add the label as a child to this layer
-    this->addChild(label, 1);
 
     // add "HelloWorld" splash screen"
     auto sprite = Sprite::create("HelloWorld.png");
@@ -83,7 +104,7 @@ bool HelloWorld::init()
     // add the sprite as a child to this layer
     this->addChild(sprite, 0);
 
-    _pClient->connect();
+    _client.connect();
     
     return true;
 }

@@ -6,7 +6,7 @@ using namespace muduo;
 using namespace muduo::net;
 using namespace cocos2d;
 
-MyTcpClient* MyTcpClient::gInstance_ = NULL;
+std::shared_ptr<MyTcpClient> MyTcpClient::gInstance_ = nullptr;
 
 MyTcpClient::MyTcpClient(EventLoop* loop, const InetAddress& serverAddr)
   : client_(loop, serverAddr, "MyTcpClient")
@@ -17,35 +17,6 @@ MyTcpClient::MyTcpClient(EventLoop* loop, const InetAddress& serverAddr)
 }
 MyTcpClient::~MyTcpClient()
 {
-}
-
-MyTcpClient * MyTcpClient::create()
-{
-    EventLoopThread loopThread;
-    uint16_t port = Constants::ServerPort;
-    InetAddress serverAddr(Constants::ServerIp, port);
-
-    MyTcpClient * layer = new (std::nothrow) MyTcpClient(loopThread.startLoop(), serverAddr);
-    if( layer && layer->init())
-    {
-        layer->autorelease();
-        return layer;
-    }
-    CC_SAFE_DELETE(layer);
-    return nullptr;
-}
-bool MyTcpClient::init()
-{
-    return true;
-}
-
-MyTcpClient* MyTcpClient::getInstance()
-{
-    if (gInstance_ == NULL)
-    {
-        gInstance_ = MyTcpClient::create();
-    }
-    return gInstance_;
 }
 
 void MyTcpClient::connect()
@@ -60,7 +31,7 @@ void MyTcpClient::disconnect()
 
 void MyTcpClient::write(const char* pMsg)
 {
-    //MutexLockGuard lock(mutex_);
+    MutexLockGuard lock(mutex_);
     if (connection_)
     {
         connection_->send(std::string(pMsg));
@@ -73,7 +44,7 @@ void MyTcpClient::onConnection(const TcpConnectionPtr& conn)
              << conn->peerAddress().toIpPort() << " is "
              << (conn->connected() ? "UP" : "DOWN");
 
-    //MutexLockGuard lock(mutex_);
+    MutexLockGuard lock(mutex_);
     if (conn->connected())
     {
         connection_ = conn;

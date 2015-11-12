@@ -10,12 +10,11 @@
 #include <stdio.h>
 #include "cocos2d.h"
 
-class MyTcpClient : public muduo::noncopyable, public cocos2d::Ref
+class MyTcpClient : public muduo::noncopyable
 {
  public:
+  MyTcpClient(muduo::net::EventLoop* loop, const muduo::net::InetAddress& serverAddr);
   virtual ~MyTcpClient();
-
-  static MyTcpClient* getInstance();
 
   void connect();
   void disconnect();
@@ -23,10 +22,6 @@ class MyTcpClient : public muduo::noncopyable, public cocos2d::Ref
   void write(const char* pMsg);
 
  private:
-  MyTcpClient(muduo::net::EventLoop* loop, const muduo::net::InetAddress& serverAddr);
-
-  static MyTcpClient* create();
-  bool init();
 
 
   void onConnection(const muduo::net::TcpConnectionPtr& conn);
@@ -36,7 +31,7 @@ class MyTcpClient : public muduo::noncopyable, public cocos2d::Ref
   muduo::MutexLock mutex_;
   muduo::net::TcpConnectionPtr connection_;
 
-  static MyTcpClient* gInstance_;
+  static std::shared_ptr<MyTcpClient> gInstance_;
 };
 
 #endif // MYTCPCLIENT_H

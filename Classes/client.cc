@@ -85,6 +85,7 @@ class ChatClient : muduo::noncopyable
   TcpConnectionPtr connection_;
 };
 
+/*
 int main(int argc, char* argv[])
 {
     EventLoopThread loopThread;
@@ -101,3 +102,4 @@ int main(int argc, char* argv[])
     client.disconnect();
     CurrentThread::sleepUsec(1000*1000);  // wait for disconnect, see ace/logging/client.cc
 }
+*/

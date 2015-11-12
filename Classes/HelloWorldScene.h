@@ -3,11 +3,12 @@
 
 #include "cocos2d.h"
 #include "mytcpclient.h"
+#include "client.cc"
 
 class HelloWorld : public cocos2d::Layer
 {
 public:
-    HelloWorld();
+    HelloWorld(muduo::net::EventLoop* loop, const muduo::net::InetAddress& serverAddr);
     virtual ~HelloWorld();
 
     static cocos2d::Scene* createScene();
@@ -17,11 +18,10 @@ public:
     // a selector callback
     void menuCloseCallback(cocos2d::Ref* pSender);
     
-    // implement the "static create()" method manually
-    CREATE_FUNC(HelloWorld);
+    static HelloWorld* create(muduo::net::EventLoop* loop, const muduo::net::InetAddress& serverAddr);
 
 private:
-    MyTcpClient* _pClient;
+    ChatClient _client;
 };
 
 #endif // __HELLOWORLD_SCENE_H__
